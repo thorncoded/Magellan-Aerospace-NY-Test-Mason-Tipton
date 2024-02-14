@@ -7,7 +7,7 @@ CREATE TABLE Part(
     req_date DATE NOT NULL 
 ); 
 
--- Insert some data into the testtable
+-- Insert some data into the table
 INSERT INTO Part (item_name, cost, req_date) VALUES ('Item1', 500, '2024-02-20');
 
 INSERT INTO Part (item_name, parent_item, cost, req_date) VALUES ('Sub1', 1, 200, '2024-02-10');
@@ -22,24 +22,41 @@ INSERT INTO Part (item_name, parent_item, cost, req_date) VALUES ('Sub1', 6, 200
 
 -- finding out
 
+-- technically not necessary because we already know it's varchar
 CREATE OR REPLACE FUNCTION Get_Total_Cost(item_name_searching VARCHAR(50)) 
 RETURNS INTEGER AS
 $$
 DECLARE
-    total_cost INTEGER;
+    total_cost INTEGER := 0;
 BEGIN
-    SELECT COALESCE(SUM(cost), 0)
-    INTO total_cost
-    FROM Part
-    WHERE item_name = parent_item OR item_name_searching IN (
-        SELECT id
+    -- Check if the parent_item of the specified item_name_searching is not null
+    IF EXISTS (
+        SELECT 1 FROM Part WHERE item_name = item_name_searching AND parent_item IS NOT NULL
+    ) THEN
+        RETURN NULL;
+    END IF;
+
+    -- fun w/recursion! >:)
+    WITH RECURSIVE item_hierarchy AS (
+        SELECT id, cost, parent_item
         FROM Part
         WHERE item_name = item_name_searching
-    );
+        UNION ALL
+        SELECT p.id, p.cost, p.parent_item
+        FROM Part p
+        JOIN item_hierarchy ih ON p.parent_item = ih.id
+    )
+
+    -- was putting this in the wrong place before
+    SELECT COALESCE(SUM(cost), 0) INTO total_cost
+    FROM item_hierarchy;
+
     RETURN total_cost;
 END;
 $$
 LANGUAGE plpgsql;
+
+
 
 
 
