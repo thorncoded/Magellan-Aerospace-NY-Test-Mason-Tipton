@@ -22,7 +22,6 @@ INSERT INTO Part (item_name, parent_item, cost, req_date) VALUES ('Sub1', 6, 200
 
 -- finding out
 
--- technically not necessary because we already know it's varchar
 CREATE OR REPLACE FUNCTION Get_Total_Cost(item_name_searching VARCHAR(50)) 
 RETURNS INTEGER AS
 $$
