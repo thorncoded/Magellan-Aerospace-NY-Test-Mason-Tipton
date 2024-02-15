@@ -1,3 +1,4 @@
+-- need to drop, cannot do "create or alter" type syntax iirc, check this later.
 DROP DATABASE IF EXISTS Part;
 
 
@@ -67,8 +68,12 @@ END;
 $$
 LANGUAGE plpgsql;
 
+--for our connection strings in the controller class
 
-
-
-
-
+CREATE ROLE dbuser WITH LOGIN PASSWORD 'magellan';
+GRANT CONNECT ON DATABASE Part TO dbuser;
+GRANT USAGE ON SCHEMA public TO dbuser;
+GRANT INSERT ON item TO dbuser;
+GRANT SELECT ON item TO dbuser;
+GRANT UPDATE ON item TO dbuser;
+GRANT DELETE ON item TO dbuser;
