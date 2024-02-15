@@ -8,14 +8,13 @@ CREATE DATABASE Part;
 
 \c part
 
---DROP TABLE IF EXISTS public.item;
 
 -- the date can be formatted later but type DATE is stored as YYYY-MM-DD.
 
 CREATE TABLE public.item( 
     id SERIAL NOT NULL PRIMARY KEY,
     item_name VARCHAR(50) NOT NULL, 
-    parent_item INTEGER REFERENCES item(id),
+    parent_item INTEGER REFERENCES public.item(id),
     cost INTEGER NOT NULL,
     req_date DATE NOT NULL 
 ); 
@@ -68,12 +67,15 @@ END;
 $$
 LANGUAGE plpgsql;
 
---for our connection strings in the controller class
+--for our connection strings later on
 
 CREATE ROLE dbuser WITH LOGIN PASSWORD 'magellan';
 GRANT CONNECT ON DATABASE Part TO dbuser;
 GRANT USAGE ON SCHEMA public TO dbuser;
-GRANT INSERT ON item TO dbuser;
-GRANT SELECT ON item TO dbuser;
-GRANT UPDATE ON item TO dbuser;
-GRANT DELETE ON item TO dbuser;
+GRANT INSERT ON public.item TO dbuser;
+GRANT SELECT ON public.item TO dbuser;
+GRANT UPDATE ON public.item TO dbuser;
+GRANT DELETE ON public.item TO dbuser;
+--should defeat the Failed to create item: 42501: permission denied for sequence item_id_seq
+GRANT ALL ON SEQUENCE public.item_id_seq TO dbuser;
+GRANT ALL ON SEQUENCE item_id_seq TO dbuser;
