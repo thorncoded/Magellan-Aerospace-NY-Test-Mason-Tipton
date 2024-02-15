@@ -152,7 +152,7 @@ namespace MagellanTest.Controllers
                 {
                     connection.Open();
 
-                    // Create a new record in the item table
+                
                     using (var cmd = new NpgsqlCommand(
                         "SELECT Get_Total_Cost(@itemName)",connection))
                     {
