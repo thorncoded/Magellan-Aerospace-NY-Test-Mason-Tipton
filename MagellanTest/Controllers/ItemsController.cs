@@ -18,8 +18,8 @@ namespace MagellanTest.Controllers
         }
 
 
-        //test connection, personal use, delete later.
-        [HttpGet("testconnection")]
+        //test connection, personal use, was in usage but comment out for final submission
+       /* [HttpGet("testconnection")]
         public IActionResult TestDatabaseConnection()
         {
             try
@@ -37,7 +37,7 @@ namespace MagellanTest.Controllers
                 //tell me that it failed
                 return StatusCode(500, $"Database connection failed: {ex.Message}");
             }
-        }
+        } */
 
 
         // Model classes to represent the data received in the JSON payload
